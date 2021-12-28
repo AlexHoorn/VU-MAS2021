@@ -17,6 +17,12 @@ def edit_distance(X: Tuple, Y: Tuple) -> int:
 
 class BinaryTree:
     def __init__(self, depth: int, choices: List = ["L", "R"]) -> None:
+        # This isn't necessarily the best code so make sure trees aren't of galactic size
+        n_paths = len(choices) ** depth
+        assert (
+            n_paths <= 2e6
+        ), f"You're about to create a tree with {n_paths:,} paths, you might want to reconsider."
+
         self.depth = depth  # depth of the tree
         self.choices = choices  # the choices at each node
 
