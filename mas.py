@@ -8,7 +8,7 @@ from numpy import e
 
 
 def edit_distance(X: Tuple, Y: Tuple) -> int:
-    assert len(X) == len(Y)
+    assert len(X) == len(Y), "X and Y must match in length."
     # Edit distance
     d = 0
     for x, y in zip(X, Y):
@@ -49,14 +49,12 @@ class MCTS:
         iterations=50,
         max_patience=5,
         rollouts=5,
-        verbose=False,
     ) -> None:
         self.tree = tree  # the binary tree
         self.c = c  # c for ucb function
         self.iterations = iterations  # iterations per setting of root
         self.max_patience = max_patience  # so we can break iterations early
         self.rollouts = rollouts  # allowed iterations for rollout
-        self.verbose = verbose  # print at end of run
 
     def run(self):
         path = tuple()  # new empty path
@@ -82,12 +80,15 @@ class MCTS:
         self.t = t
         self.n = n
 
-        # Print after run
-        if self.verbose:
-            reward = self.reward
-            print(
-                f"Found {reward=:.2f} with path=`{''.join(path)}` in {runtime:.2f}s and {self.search_iterations} steps"
-            )
+    def print_solution(self):
+        reward = self.reward
+        path = self.path
+        runtime = self.runtime
+        steps = self.search_iterations
+
+        print(
+            f"Found {reward=:.2f} with path=`{''.join(path)}` in {runtime:.2f}s and {steps} steps"
+        )
 
     def _determine_root(self, path: Tuple, t, n):
         # Keep note of patience
@@ -99,15 +100,18 @@ class MCTS:
             curr_path = self._select_path(path, t, n)
             self.search_iterations += 1
 
+            # This implements early breaking, if we keep getting root nodes then stop iterating
             if len(curr_path) >= self.tree.depth:
                 patience += 1
-                # Break early if we keep selecting leaf nodes
+                # Break if we keep selecting leaf nodes
                 if patience >= self.max_patience:
                     self.early_stops += 1
                     break
 
             else:
-                # Create and explore child nodes
+                # Create and explore child nodes. This is the biggest difference to the MCTS in the slides
+                # when we reach an unexplored area this immediately expands the DIRECT children. Instead of
+                # setting t = 0 and n = 0. This is much easier to do programmatically.
                 for c in self.tree.choices:
                     child = curr_path + tuple(c)
                     # Determine reward by rollout
