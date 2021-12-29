@@ -1,8 +1,10 @@
 import random
-from itertools import product
+from functools import lru_cache
 from math import log, sqrt
 from time import perf_counter
 from typing import Dict, List, Tuple
+
+from numpy import e
 
 
 def edit_distance(X: Tuple, Y: Tuple) -> int:
@@ -17,36 +19,32 @@ def edit_distance(X: Tuple, Y: Tuple) -> int:
 
 class BinaryTree:
     def __init__(self, depth: int, choices: List = ["L", "R"]) -> None:
-        # This isn't necessarily the best code so make sure trees aren't of galactic size
-        n_paths = len(choices) ** depth
-        assert (
-            n_paths <= 2e6
-        ), f"You're about to create a tree with {n_paths:,} paths, you might want to reconsider."
+        # BinaryTree that generates rewards lazily so they can be of galactic size
 
-        self.depth = depth  # depth of the tree
-        self.choices = choices  # the choices at each node
+        self.depth = int(depth)  # depth of the tree
+        self.choices = list(choices)  # the choices at each node
 
-        self.paths = list(product(choices, repeat=depth))  # possible paths
-        self.rewards = self._create_rewards()  # generate rewards
+        self._target = self._generate_target()  # random path to base rewards on
+        self.n_paths = len(choices) ** depth  # amount of paths in the tree
 
+    # Cache last million
+    @lru_cache(maxsize=1000000)
     def get_reward(self, path: Tuple) -> float:
         # Get a reward given a path
-        return self.rewards.get(path)
+        return self._reward_function(self._target, path)
 
-    def get_best_reward(self):
-        path = max(self.rewards, key=lambda x: self.get_reward(x))
-        return path, self.get_reward(path)
+    def _generate_target(self):
+        # Generate random path
+        return tuple(random.choice(self.choices) for _ in range(self.depth))
 
-    def _create_rewards(self, B: float = 0.5, r: float = 10) -> Dict[Tuple, float]:
-        # Generate rewards by picking random path and calculating difference to others
-        target = random.choice(self.paths)
-        rewards = {path: B ** -(edit_distance(target, path) / r) for path in self.paths}
-
-        return rewards
+    def _reward_function(
+        self, target: Tuple, path: Tuple, B: float = 2.0, r: float = 20.0
+    ):
+        return B * e ** -(edit_distance(target, path) / r)
 
 
 class MCTS:
-    def __init__(self, tree: BinaryTree, c=2, iterations=100, verbose=False) -> None:
+    def __init__(self, tree: BinaryTree, c, iterations=5, verbose=False) -> None:
         self.tree = tree  # the binary tree
         self.c = c  # c for ucb
         self.iterations = iterations  # allowed iterations for rollout
@@ -94,7 +92,7 @@ class MCTS:
         if self.verbose:
             reward = self.reward
             print(
-                f"Found {reward=:.2f} with {path=} in {runtime:.2f}s and {self.search_steps} steps"
+                f"Found {reward=:.2f} with path=`{''.join(path)}` in {runtime:.2f}s and {self.search_steps} steps"
             )
 
     def _backup(self, path: Tuple, d: Dict[Tuple, float]) -> Dict[Tuple, float]:
