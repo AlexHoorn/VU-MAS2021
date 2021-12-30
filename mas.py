@@ -4,7 +4,9 @@ from math import log, sqrt
 from time import perf_counter
 from typing import Dict, List, Tuple
 
-from numpy import e
+import matplotlib.pyplot as plt
+import numpy as np
+import seaborn as sns
 
 
 def edit_distance(X: Tuple, Y: Tuple) -> int:
@@ -38,7 +40,7 @@ class BinaryTree:
         return tuple(random.choice(self.choices) for _ in range(self.depth))
 
     def _reward_function(self, target: Tuple, path: Tuple, B: float = 2, r: float = 20):
-        return B * e ** -(edit_distance(target, path) / r)
+        return B * np.e ** -(edit_distance(target, path) / r)
 
 
 class MCTS:
@@ -111,7 +113,8 @@ class MCTS:
             else:
                 # Create and explore child nodes. This is the biggest difference to the MCTS in the slides
                 # when we reach an unexplored area this immediately expands the DIRECT children. Instead of
-                # setting t = 0 and n = 0. This is much easier to do programmatically.
+                # setting t = 0 and n = 0. This is much easier to do programmatically instead of dealing with
+                # unexplored children.
                 for c in self.tree.choices:
                     child = curr_path + tuple(c)
                     # Determine reward by rollout
@@ -158,9 +161,9 @@ class MCTS:
 
     def _roll_out(self, path: Tuple) -> float:
         # Roll out by randomly generating path and fetching their rewards
-        random_depth = self.tree.depth - len(path)
+        depth = self.tree.depth - len(path)
         rewards = [
-            self.tree.get_reward(path + self._random_path(random_depth))
+            self.tree.get_reward(path + self._random_path(depth))
             for _ in range(self.rollouts)
         ]
 
@@ -173,3 +176,281 @@ class MCTS:
     def _ucb(self, node_value: float, visits_parent: int, visits_node: int) -> float:
         # Calculate UCB
         return node_value + self.c * sqrt(log(visits_parent) / visits_node)
+
+
+class GridWorld:
+    def __init__(
+        self,
+        terminals: Dict[Tuple, float],
+        walls: List[Tuple] = [],
+        gridsize: Tuple[int, int] = (9, 9),
+        step_cost: float = -1.0,
+    ) -> None:
+        # Construct grid with rewards
+        grid = np.ones(gridsize) * step_cost
+        for pos, reward in terminals.items():
+            grid[pos] = reward
+
+        # Construct grid with walls
+        grid_wall = np.zeros(gridsize).astype(bool)
+        for wall in walls:
+            grid_wall[wall] = True
+
+        self.terminals = list(terminals.keys())
+        self.walls = walls
+        self.step_cost = step_cost
+        self.gridsize = gridsize
+
+        self.grid = grid
+        self.grid_wall = grid_wall
+        # The possible actions that can be taken
+        self.actions = [(-1, 0), (0, -1), (0, 1), (1, 0)]
+        # The possible starting positions (including terminal)
+        self.start_positions = list(zip(*np.where(~self.grid_wall)))
+
+    def plot_grid(self):
+        # Plot the grid and its rewards
+        _, ax = plt.subplots(figsize=(6, 6))
+
+        ax = sns.heatmap(self.grid, cmap="RdYlGn", annot=True, cbar=False, ax=ax)
+        self.plot_walls(ax=ax)
+
+        return ax
+
+    def plot_walls(self, ax=None):
+        # Plot the walls in the grid
+        ax = sns.heatmap(
+            self.grid_wall,
+            mask=self.grid_wall != True,
+            cmap="Blues",
+            vmin=0,
+            vmax=1.1,
+            cbar=False,
+            ax=ax,
+        )
+
+        return ax
+
+    def step(
+        self, pos: Tuple[int, int], step: Tuple[int, int]
+    ) -> Tuple[Tuple, float, bool]:
+        # The new position after the step
+        new_pos = tuple(x + y for x, y in zip(pos, step))
+
+        # Make sure we stay in the grid or bounce back if we hit a wall
+        if not self._pos_in_world(new_pos) or self._pos_in_wall(new_pos):
+            new_pos = pos
+            # Incur cost of making a step
+            reward = self.step_cost
+        else:
+            # Reward from grid
+            reward = self.grid[new_pos]
+
+        # New position, reward, terminal state
+        return new_pos, reward, new_pos in self.terminals
+
+    def _pos_in_world(self, pos: Tuple[int, int]):
+        # Check if given position is within the bounds of the grid
+        y, x = pos
+        yg, xg = self.gridsize
+        return xg > x >= 0 and yg > y >= 0
+
+    def _pos_in_wall(self, pos):
+        # Check if given position is in a wall
+        return pos in self.walls
+
+
+class MonteCarloSweep:
+    def __init__(self, world: GridWorld) -> None:
+        self.world = world
+
+    def evaluate(self, iterations: int):
+        start_positions = self.world.start_positions
+        rewards = {pos: [] for pos in start_positions}
+
+        for _ in range(iterations):
+            # Sweep every position
+            for start_pos in start_positions:
+                # Get total reward along path
+                reward = self._get_reward(start_pos)
+                rewards[start_pos].append(reward)
+
+        # Convert gathered rewards to a grid
+        reward_grid = np.zeros(self.world.gridsize)
+        for pos, r in rewards.items():
+            # The mean of the total rewards
+            reward_grid[pos] = np.mean(r)
+
+        self.rewards = reward_grid
+
+    def _get_reward(self, start_pos):
+        # Check if in terminal state
+        terminal = start_pos in self.world.terminals
+
+        total_reward = 0
+        pos = start_pos
+
+        # Take steps until we reach terminal state
+        while not terminal:
+            pos, reward, terminal = self.world.step(pos, self.choose_action())
+            total_reward += reward
+
+        return total_reward
+
+    def choose_action(self):
+        # Randomly choose an action
+        return random.choice(self.world.actions)
+
+    def plot_rewards(self, ax=None):
+        # Check if rewards are set
+        assert hasattr(self, "rewards"), "No rewards set yet, run evaluate first."
+
+        # Plot rewards on grid
+        ax = sns.heatmap(self.rewards, cmap="RdYlGn", center=0, ax=ax)
+        ax.set_title("Rewards using Monte Carlo Sweep")
+
+        self.world.plot_walls(ax=ax)
+
+        return ax
+
+
+class GreedySARSA:
+    def __init__(
+        self,
+        world: GridWorld,
+        epsilon: float = 0.1,
+        alpha: float = 0.2,
+        gamma: float = 0.9,
+    ) -> None:
+        self.world = world
+        self.epsilon = epsilon
+        self.alpha = alpha
+        self.gamma = gamma
+
+    def evaluate(self, episodes: int):
+        # Keep track of the runtime
+        runtime = perf_counter()
+
+        # Initialize Q-table with zeros
+        self.q = np.zeros((*self.world.gridsize, len(self.world.actions)))
+
+        # Store simple overview of rewards
+        rewards = np.zeros(self.world.gridsize)
+
+        for _ in range(episodes):
+            start_pos = random.choice(self.world.start_positions)
+            rewards[start_pos] = self._steps(start_pos)
+
+        self.rewards = rewards
+
+        # Store runtime when finished
+        self.runtime = perf_counter() - runtime
+
+    def choose_action(self, pos: Tuple[int, int]) -> Tuple[Tuple, int]:
+        # Choose action greedily with chance defined by epsilon
+        if np.random.uniform(0, 1) > self.epsilon:
+            q = self.q[pos]
+            (best_idx,) = np.where(q == q.max())
+
+            if len(best_idx) > 1:
+                best_idx = np.random.choice(best_idx)
+            else:
+                best_idx = int(best_idx)
+
+            return self.world.actions[best_idx], best_idx
+
+        # Choose random action
+        actions = self.world.actions
+        action_idx = np.random.choice(np.arange(len(actions)))
+
+        return actions[action_idx], action_idx
+
+    def _update(
+        self,
+        pos: Tuple,
+        action_idx: int,
+        reward: float,
+        new_pos: Tuple,
+        new_action_idx: int,
+    ) -> None:
+        curr = *pos, action_idx  # the index of the current in q
+        new = *new_pos, new_action_idx  # the index of new in q
+
+        # Update q with SARSA formula
+        self.q[curr] += self.alpha * (reward + self.gamma * self.q[new] - self.q[curr])
+
+    def _steps(self, start_pos):
+        # Check if current pos is in terminal
+        terminal = start_pos in self.world.terminals
+
+        total_reward = 0
+
+        # Determine first pos and action
+        pos = start_pos
+        action, action_idx = self.choose_action(pos)
+
+        # Keep making steps until terminal state
+        while not terminal:
+            new_pos, reward, terminal = self.world.step(pos, action)
+            new_action, new_action_idx = self.choose_action(new_pos)
+
+            self._update(pos, action_idx, reward, new_pos, new_action_idx)
+
+            pos = new_pos
+            action, action_idx = new_action, new_action_idx
+
+            total_reward += reward
+
+        return total_reward
+
+    def plot_rewards(self, ax=None, path=True):
+        # Plot the rewards on a grid
+        assert hasattr(self, "rewards"), "No rewards set yet, run evaluate first."
+
+        reward_grid = self.rewards
+
+        # Heatmap of rewards
+        ax = sns.heatmap(reward_grid, cmap="RdYlGn", center=0, ax=ax)
+        ax.set_title(f"Rewards using {str(self)}, mean = {reward_grid.mean():.2f}")
+
+        # Plot arrows in step directions
+        if path:
+            for pos in set(self.world.start_positions) - set(self.world.terminals):
+                q = self.q[pos]
+                # Determine best actions
+                (best_idx,) = np.where(q == q.max())
+
+                # Draw arrow for every best direction
+                for idx in best_idx:
+                    action = self.world.actions[idx]
+                    ax.arrow(
+                        pos[1] + 0.5,
+                        pos[0] + 0.5,
+                        action[1] * 0.8,
+                        action[0] * 0.8,
+                        length_includes_head=True,
+                        head_width=0.3,
+                    )
+
+        self.world.plot_walls(ax=ax)
+
+        return ax
+
+    def __str__(self) -> str:
+        return "Greedy SARSA"
+
+
+class QLearning(GreedySARSA):
+    # The only difference to Greedy SARSA is the updating rule, so we just inherit the whole class
+    # and overwrite the updating method.
+
+    def _update(self, pos, action_idx, reward, new_pos, *_):
+        curr = *pos, action_idx  # the index of the current in q
+        new_action_idx = self.q[new_pos].argmax()  # the difference to SARSA
+        new = *new_pos, new_action_idx  # the index of the new in q
+
+        # Update q with Q-Learning formula
+        self.q[curr] += self.alpha * (reward + self.gamma * self.q[new] - self.q[curr])
+
+    def __str__(self) -> str:
+        return "Q-Learning"

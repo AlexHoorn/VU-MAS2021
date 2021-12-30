@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 20.11) (preloaded format=pdflatex 2020.11.24)  28 DEC 2021 16:02
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 20.11) (preloaded format=pdflatex 2020.11.24)  30 DEC 2021 20:20
 entering extended mode
 **./report.tex
 (report.tex
@@ -287,11 +287,11 @@ File: 1-2.pdf Graphic file (type pdf)
 <use 1-2.pdf>
 Package pdftex.def Info: 1-2.pdf  used on input line 27.
 (pdftex.def)             Requested size: 292.7776pt x 146.38785pt.
-<2-1.pdf, id=3, 867.24pt x 289.08pt>
+<2-1.pdf, id=3, 578.16pt x 578.16pt>
 File: 2-1.pdf Graphic file (type pdf)
 <use 2-1.pdf>
 Package pdftex.def Info: 2-1.pdf  used on input line 37.
-(pdftex.def)             Requested size: 418.25555pt x 139.41846pt.
+(pdftex.def)             Requested size: 418.25555pt x 418.251pt.
  [1
 
 
@@ -317,9 +317,9 @@ Here is how much of TeX's memory you used:
 <C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pf
 b><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program
  Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmssbx10.pfb>
-Output written on report.pdf (2 pages, 92246 bytes).
+Output written on report.pdf (2 pages, 96665 bytes).
 PDF statistics:
- 149 PDF objects out of 1000 (max. 8388607)
+ 158 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  16 words of extra memory for PDF output out of 10000 (max. 10000000)
 

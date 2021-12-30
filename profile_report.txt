@@ -1,0 +1,51 @@
+         111391287 function calls in 57.945 seconds
+
+   Ordered by: internal time
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+  7419845   14.590    0.000   14.590    0.000 e:\MAS_assignment\mas.py:245(_pos_in_wall)
+  8652370   13.905    0.000   41.412    0.000 e:\MAS_assignment\mas.py:225(step)
+  8652370    6.827    0.000    6.827    0.000 e:\MAS_assignment\mas.py:240(_pos_in_world)
+ 25957110    6.089    0.000    6.089    0.000 e:\MAS_assignment\mas.py:228(<genexpr>)
+    68000    4.568    0.000   57.892    0.001 e:\MAS_assignment\mas.py:265(_get_reward)
+  8652370    4.032    0.000    5.744    0.000 C:\Users\Alex Hoorn\miniconda3\lib\random.py:237(_randbelow_with_getrandbits)
+  8652370    3.093    0.000    9.366    0.000 C:\Users\Alex Hoorn\miniconda3\lib\random.py:343(choice)
+  8652370    2.546    0.000   11.913    0.000 e:\MAS_assignment\mas.py:276(choose_action)
+ 17310837    1.143    0.000    1.143    0.000 {method 'getrandbits' of '_random.Random' objects}
+  8652370    0.569    0.000    0.569    0.000 {method 'bit_length' of 'int' objects}
+  8652370    0.529    0.000    0.529    0.000 {built-in method builtins.len}
+        1    0.040    0.040   57.945   57.945 e:\MAS_assignment\mas.py:253(evaluate)
+    68000    0.008    0.000    0.008    0.000 {method 'append' of 'list' objects}
+       68    0.004    0.000    0.004    0.000 {built-in method numpy.asanyarray}
+       68    0.000    0.000    0.005    0.000 C:\Users\Alex Hoorn\miniconda3\lib\site-packages\numpy\core\_methods.py:162(_mean)
+       68    0.000    0.000    0.000    0.000 {method 'reduce' of 'numpy.ufunc' objects}
+       68    0.000    0.000    0.000    0.000 C:\Users\Alex Hoorn\miniconda3\lib\site-packages\numpy\core\_methods.py:66(_count_reduce_items)
+       68    0.000    0.000    0.005    0.000 C:\Users\Alex Hoorn\miniconda3\lib\site-packages\numpy\core\fromnumeric.py:3322(mean)
+       70    0.000    0.000    0.005    0.000 {built-in method numpy.core._multiarray_umath.implement_array_function}
+        1    0.000    0.000    0.005    0.005 e:\MAS_assignment\mas.py:262(<dictcomp>)
+       68    0.000    0.000    0.005    0.000 <__array_function__ internals>:2(mean)
+        1    0.000    0.000    0.000    0.000 e:\MAS_assignment\mas.py:182(__init__)
+        1    0.000    0.000    0.000    0.000 e:\MAS_assignment\mas.py:254(<listcomp>)
+      134    0.000    0.000    0.000    0.000 {built-in method builtins.issubclass}
+       68    0.000    0.000    0.000    0.000 {built-in method numpy.core._multiarray_umath.normalize_axis_index}
+        1    0.000    0.000    0.000    0.000 {built-in method numpy.empty}
+       68    0.000    0.000    0.000    0.000 {built-in method builtins.isinstance}
+       68    0.000    0.000    0.000    0.000 {built-in method builtins.hasattr}
+        1    0.000    0.000    0.000    0.000 e:\MAS_assignment\mas.py:255(<dictcomp>)
+       68    0.000    0.000    0.000    0.000 C:\Users\Alex Hoorn\miniconda3\lib\site-packages\numpy\core\fromnumeric.py:3317(_mean_dispatcher)
+        1    0.000    0.000    0.000    0.000 C:\Users\Alex Hoorn\miniconda3\lib\site-packages\numpy\core\numeric.py:149(ones)
+        1    0.000    0.000    0.000    0.000 {method 'astype' of 'numpy.ndarray' objects}
+        1    0.000    0.000    0.000    0.000 <__array_function__ internals>:2(copyto)
+        1    0.000    0.000    0.000    0.000 <__array_function__ internals>:2(where)
+        1    0.000    0.000    0.000    0.000 e:\MAS_assignment\profile_code.py:14(<listcomp>)
+        2    0.000    0.000    0.000    0.000 {method 'items' of 'dict' objects}
+        1    0.000    0.000    0.000    0.000 {built-in method numpy.zeros}
+        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+        1    0.000    0.000    0.000    0.000 e:\MAS_assignment\profile_code.py:15(<listcomp>)
+        1    0.000    0.000    0.000    0.000 e:\MAS_assignment\profile_code.py:16(<listcomp>)
+        1    0.000    0.000    0.000    0.000 e:\MAS_assignment\mas.py:250(__init__)
+        1    0.000    0.000    0.000    0.000 C:\Users\Alex Hoorn\miniconda3\lib\site-packages\numpy\core\multiarray.py:341(where)
+        1    0.000    0.000    0.000    0.000 C:\Users\Alex Hoorn\miniconda3\lib\site-packages\numpy\core\multiarray.py:1071(copyto)
+        1    0.000    0.000    0.000    0.000 {method 'keys' of 'dict' objects}
+
+
