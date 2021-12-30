@@ -210,7 +210,7 @@ class GridWorld:
 
     def plot_grid(self):
         # Plot the grid and its rewards
-        _, ax = plt.subplots(figsize=(6, 6))
+        _, ax = plt.subplots(figsize=(4, 4))
 
         ax = sns.heatmap(self.grid, cmap="RdYlGn", annot=True, cbar=False, ax=ax)
         self.plot_walls(ax=ax)
@@ -307,7 +307,7 @@ class MonteCarloSweep:
 
         # Plot rewards on grid
         ax = sns.heatmap(self.rewards, cmap="RdYlGn", center=0, ax=ax)
-        ax.set_title("Rewards using Monte Carlo Sweep")
+        ax.set_title(f"Rewards using Monte Carlo Sweep, mean = {self.rewards.mean():.2f}")
 
         self.world.plot_walls(ax=ax)
 
