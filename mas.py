@@ -307,14 +307,16 @@ class MonteCarloSweep:
 
         # Plot rewards on grid
         ax = sns.heatmap(self.rewards, cmap="RdYlGn", center=0, ax=ax)
-        ax.set_title(f"Rewards using Monte Carlo Sweep, mean = {self.rewards.mean():.2f}")
+        ax.set_title(
+            f"Rewards using Monte Carlo Sweep, mean = {self.rewards.mean():.2f}"
+        )
 
         self.world.plot_walls(ax=ax)
 
         return ax
 
 
-class GreedySARSA:
+class SARSA:
     def __init__(
         self,
         world: GridWorld,
@@ -437,11 +439,11 @@ class GreedySARSA:
         return ax
 
     def __str__(self) -> str:
-        return "Greedy SARSA"
+        return "SARSA"
 
 
-class QLearning(GreedySARSA):
-    # The only difference to Greedy SARSA is the updating rule, so we just inherit the whole class
+class QLearning(SARSA):
+    # The only difference to SARSA is the updating rule, so we just inherit the whole class
     # and overwrite the updating method.
 
     def _update(self, pos, action_idx, reward, new_pos, *_):

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 20.11) (preloaded format=pdflatex 2020.11.24)  30 DEC 2021 22:35
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 20.11) (preloaded format=pdflatex 2020.11.24)  30 DEC 2021 23:31
 entering extended mode
 **./report.tex
 (report.tex
@@ -312,7 +312,7 @@ Package pdftex.def Info: 1-3.pdf  used on input line 41.
 <2-1.pdf, id=152, 578.16pt x 578.16pt>
 File: 2-1.pdf Graphic file (type pdf)
 <use 2-1.pdf>
-Package pdftex.def Info: 2-1.pdf  used on input line 58.
+Package pdftex.def Info: 2-1.pdf  used on input line 60.
 (pdftex.def)             Requested size: 292.7776pt x 292.7757pt.
  [3 <./2-1.pdf>]
 <3-0.pdf, id=200, 289.08pt x 289.08pt>
@@ -325,32 +325,33 @@ File: 3-1.pdf Graphic file (type pdf)
 <use 3-1.pdf>
 Package pdftex.def Info: 3-1.pdf  used on input line 89.
 (pdftex.def)             Requested size: 209.12778pt x 139.41846pt.
- [4 <./3-0.pdf> <./3-1.pdf>]
-<3-2.pdf, id=263, 722.7pt x 289.08pt>
+ [4 <./3-0.pdf>]
+<3-2.pdf, id=222, 722.7pt x 289.08pt>
 File: 3-2.pdf Graphic file (type pdf)
 <use 3-2.pdf>
-Package pdftex.def Info: 3-2.pdf  used on input line 108.
+Package pdftex.def Info: 3-2.pdf  used on input line 114.
 (pdftex.def)             Requested size: 334.60571pt x 133.84296pt.
-<3-3.pdf, id=264, 578.16pt x 289.08pt>
+ [5 <./3-1.pdf>]
+<3-3.pdf, id=267, 578.16pt x 289.08pt>
 File: 3-3.pdf Graphic file (type pdf)
 <use 3-3.pdf>
-Package pdftex.def Info: 3-3.pdf  used on input line 115.
+Package pdftex.def Info: 3-3.pdf  used on input line 123.
 (pdftex.def)             Requested size: 292.7776pt x 146.38785pt.
 
-[5 <./3-2.pdf> <./3-3.pdf>]
+[6 <./3-2.pdf> <./3-3.pdf>]
 
 LaTeX3 Info: Redefining command \BeforeClosingMainAux with sig. 'm' on line
-(LaTeX3)     120.
+(LaTeX3)     128.
 
 
 LaTeX3 Info: Redefining command \BeforeClosingMainAux with sig. 'm' on line
-(LaTeX3)     120.
+(LaTeX3)     128.
 
  (report.aux) ) 
 Here is how much of TeX's memory you used:
  4071 strings out of 481631
  86340 string characters out of 2919844
- 478736 words of memory out of 3000000
+ 479736 words of memory out of 3000000
  20838 multiletter control sequences out of 15000+200000
  541820 words of font info for 51 fonts, out of 3000000 for 9000
  62 hyphenation exceptions out of 8191
@@ -368,9 +369,9 @@ iles/MiKTeX/fonts/type1/public/amsfonts/cm/cmssbx10.pfb><C:/Program Files/MiKTe
 X/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files/MiKTeX/fonts/type
 1/public/amsfonts/cm/cmsy8.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsf
 onts/cm/cmti10.pfb>
-Output written on report.pdf (5 pages, 324412 bytes).
+Output written on report.pdf (6 pages, 325982 bytes).
 PDF statistics:
- 402 PDF objects out of 1000 (max. 8388607)
+ 401 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  41 words of extra memory for PDF output out of 10000 (max. 10000000)
 
